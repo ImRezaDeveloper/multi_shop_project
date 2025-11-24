@@ -7,18 +7,21 @@ class User(AbstractBaseUser):
         verbose_name="آدرس ایمیل",
         max_length=255,
         unique=True,
+        null=True,
+        blank=True
     )
     full_name = models.CharField(max_length=50, verbose_name="نام و نام خانوادگی")
+    phone = models.CharField(max_length=12, unique=True, verbose_name='شماره تماس', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     objects = UserManager()
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "phone"
     # REQUIRED_FIELDS = ["date_of_birth"]
 
     def __str__(self):
-        return self.email
+        return str(self.phone)
     
     class Meta:
         verbose_name = 'کاربر'
