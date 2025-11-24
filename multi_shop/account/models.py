@@ -15,10 +15,14 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["date_of_birth"]
+    # REQUIRED_FIELDS = ["date_of_birth"]
 
     def __str__(self):
         return self.email
+    
+    class Meta:
+        verbose_name = 'کاربر'
+        verbose_name_plural = 'کاربران'
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
