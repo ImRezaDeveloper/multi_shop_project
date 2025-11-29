@@ -1,1 +1,3 @@
 django
+ghasedak_sms
+requests

@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import User
 from django import forms
 from django.contrib import admin
@@ -7,6 +8,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 from django.core import validators
+from .validator import start_with_0
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -51,7 +53,7 @@ class UserChangeForm(forms.ModelForm):
         fields = ["phone", "password", "is_active", "is_admin"]
 
 class LoginForm(forms.Form):
-    phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[start_with_0])
     password = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     
     def clean_phone(self):
