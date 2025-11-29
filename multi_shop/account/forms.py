@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
+from django.core import validators
 
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -48,3 +49,15 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["phone", "password", "is_active", "is_admin"]
+
+class LoginForm(forms.Form):
+    phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+        
+        if len(phone) > 12:
+            raise ValidationError(f"طول شماره تماس شما {str(len(phone))} عدد است . باید 12 عدد باشد ", code="invalid_phone")
+        
+        return phone
