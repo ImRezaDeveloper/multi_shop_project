@@ -5,6 +5,7 @@ from django.views import View
 from .models import OTP, User
 from .forms import LoginForm, RegisterForm, OtpForm
 import ghasedak_sms
+from django.utils.crypto import get_random_string
 from random import randint
 # Create your views here.
 
@@ -54,9 +55,10 @@ class RegisterView(View):
             )
             )
             print(response)
-            OTP.objects.create(phone=cd['phone'], code=randcode)
+            token = get_random_string(length=100)
+            OTP.objects.create(phone=cd['phone'], code=randcode, token=token)
             print("randcode: ", randcode)
-            return redirect(f"{reverse('check_otp')}?phone={cd['phone']}")
+            return redirect(f"{reverse('check_otp')}?token={token}")
         else:
             form.add_error("phone", "invalid_phone")
         
@@ -68,14 +70,15 @@ class CheckOtpView(View):
     
     def post(self, request):
         form = OtpForm(request.POST)
-        phone = request.GET.get("phone")
-
+        token = request.GET.get("token")
+        
         if form.is_valid():
             cd = form.cleaned_data
             otp = cd['otp']
 
-            if OTP.objects.filter(code=otp, phone=phone).exists():
-                user = User.objects.create(phone=phone)
+            if OTP.objects.filter(code=otp, token=token).exists():
+                otp = OTP.objects.get(token=token)
+                user, is_created = User.objects.get_or_create(phone=otp.phone)
                 login(request, user)
                 return redirect('home')
 
