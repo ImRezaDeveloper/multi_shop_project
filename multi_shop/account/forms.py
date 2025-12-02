@@ -63,3 +63,9 @@ class LoginForm(forms.Form):
             raise ValidationError(f"طول شماره تماس شما {str(len(phone))} عدد است . باید 12 عدد باشد ", code="invalid_phone")
         
         return phone
+    
+class RegisterForm(forms.Form):
+    phone = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[validators.MaxLengthValidator(11)])
+    
+class OtpForm(forms.Form):
+    otp = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), validators=[validators.MaxLengthValidator(4)])
